@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>یادداشت‌نویس</title>
+<!-- فونت وزیرمتن فقط در حالت آنلاین بارگذاری می‌شود؛ آفلاین، فونت‌های سیستم جایگزین می‌شوند -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk1:#e3e9f3;--desk2:#cbd6e8;--paper:#fcfcfb;--ink:#1b2233;--muted:#7a8398;
+  --line:#dbe1ec;--accent:#2b4acb;--on:#fff;--tint:rgba(43,74,203,.1);
+  --bar:rgba(252,252,251,.82);--shadow:0 2px 4px rgba(27,34,51,.06),0 18px 50px rgba(27,34,51,.12);
+}
+[data-theme=dark]{
+  --desk1:#10172b;--desk2:#090d19;--paper:#161e34;--ink:#e6eaf5;--muted:#7f8aa6;
+  --line:#26304c;--accent:#4fd1c5;--on:#0b1220;--tint:rgba(79,209,197,.14);
+  --bar:rgba(22,30,52,.82);--shadow:0 2px 4px rgba(0,0,0,.3),0 18px 50px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  height:100dvh;display:flex;flex-direction:column;color:var(--ink);
+  font-family:'Vazirmatn',Tahoma,'Segoe UI',sans-serif;
+  background:radial-gradient(1100px 600px at 50% -10%,var(--desk1),var(--desk2)) fixed;
+}
+button,select{font:inherit;color:inherit}
+
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px clamp(12px,3vw,32px);
+  background:var(--bar);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{font-weight:600;color:var(--accent);margin-inline-end:10px}
+.grp{display:flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.sp{flex:1}
+.b{min-width:34px;height:34px;padding:0 10px;border:0;border-radius:7px;background:transparent;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;font-size:.85rem;transition:background .15s}
+.b:hover{background:var(--tint)}
+.b[aria-pressed=true]{background:var(--accent);color:var(--on)}
+.b:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.b svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.ltr{font-weight:600;letter-spacing:.02em}
+select{height:34px;max-width:140px;border:0;border-radius:7px;background:transparent;padding:0 6px;cursor:pointer}
+select option{background:var(--paper);color:var(--ink)}
+.size{min-width:30px;text-align:center;font-size:.85rem}
+
+main{flex:1;min-height:0;display:flex;justify-content:center;padding:clamp(12px,3vw,32px) clamp(8px,9vw,140px)}
+.paper{width:100%;max-width:860px;min-height:0;display:flex;flex-direction:column;overflow:hidden;
+  background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:16px;box-shadow:var(--shadow)}
+textarea{flex:1;width:100%;border:0;outline:0;resize:none;background:transparent;color:var(--ink);
+  padding:clamp(18px,5vw,56px);font-family:var(--f);font-size:var(--s);line-height:2;text-align:var(--a);caret-color:var(--accent)}
+textarea::placeholder{color:var(--muted);opacity:.7}
+textarea::selection{background:var(--tint)}
+.status{display:flex;justify-content:space-between;gap:12px;padding:8px 20px;border-top:1px solid var(--line);color:var(--muted);font-size:.78rem}
+.toast{position:fixed;bottom:28px;left:50%;transform:translate(-50%,10px);padding:8px 16px;border-radius:9px;
+  background:var(--ink);color:var(--paper);font-size:.85rem;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="bar" id="bar">
+  <div class="brand">یادداشت‌نویس</div>
+
+  <div class="grp">
+    <button class="b" data-a="undo" title="بازگشت (Ctrl+Z)">↶</button>
+    <button class="b" data-a="redo" title="جلو (Ctrl+Y)">↷</button>
+  </div>
+
+  <div class="grp">
+    <button class="b" data-a="copy" title="کپی (Ctrl+C)">کپی</button>
+    <button class="b" data-a="cut" title="برش (Ctrl+X)">برش</button>
+    <button class="b" data-a="paste" title="چسباندن (Ctrl+V)">چسباندن</button>
+  </div>
+
+  <div class="grp">
+    <select id="font" title="فونت">
+      <option value="vazir">وزیرمتن</option>
+      <option value="tahoma">تاهوما</option>
+      <option value="arial">آریال</option>
+      <option value="times">تایمز</option>
+      <option value="georgia">جورجیا</option>
+      <option value="courier">Courier</option>
+    </select>
+    <button class="b" data-a="smaller" title="کوچک‌تر کردن متن">A−</button>
+    <span class="size" id="sz"></span>
+    <button class="b" data-a="bigger" title="بزرگ‌تر کردن متن">A+</button>
+  </div>
+
+  <div class="grp">
+    <button class="b" data-al="left" title="چپ‌چین"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h10M4 14h16M4 18h10"/></svg></button>
+    <button class="b" data-al="center" title="وسط‌چین"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 10h10M4 14h16M7 18h10"/></svg></button>
+    <button class="b" data-al="right" title="راست‌چین"><svg viewBox="0 0 24 24"><path d="M4 6h16M10 10h10M4 14h16M10 18h10"/></svg></button>
+    <button class="b" data-al="justify" title="تراز دو طرف"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg></button>
+  </div>
+
+  <div class="grp">
+    <button class="b ltr" data-dir="rtl" title="جهت متن: راست به چپ">RTL</button>
+    <button class="b ltr" data-dir="ltr" title="جهت متن: چپ به راست">LTR</button>
+  </div>
+
+  <span class="sp"></span>
+
+  <div class="grp">
+    <button class="b" data-a="download" title="دانلود به‌صورت فایل متنی (Ctrl+S)">دانلود</button>
+    <button class="b" data-a="theme" id="theme" title="تغییر تم روشن/تاریک">☾</button>
+  </div>
+</header>
+
+<main>
+  <div class="paper">
+    <textarea id="t" spellcheck="false" placeholder="از اینجا شروع به نوشتن کنید…" autofocus></textarea>
+    <div class="status"><span id="cnt"></span><span id="st"></span></div>
+  </div>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const ta = $('#t');
+const FONTS = {
+  vazir:"'Vazirmatn','Segoe UI',Tahoma,sans-serif",
+  tahoma:"Tahoma,'Segoe UI',sans-serif",
+  arial:"Arial,'Segoe UI',sans-serif",
+  times:"'Times New Roman','Noto Naskh Arabic',serif",
+  georgia:"Georgia,'Times New Roman',serif",
+  courier:"'Courier New',monospace"
+};
+const store = {
+  get(k){ try{ return localStorage.getItem(k) }catch(e){ return null } },
+  set(k,v){ try{ localStorage.setItem(k,v); return true }catch(e){ return false } }
+};
+
+/* ---------- تنظیمات ---------- */
+let S = {font:'vazir', size:22, align:'right', dir:'rtl', theme:'light'};
+try{ Object.assign(S, JSON.parse(store.get('pn_settings')||'{}')) }catch(e){}
+
+function apply(){
+  const r = document.documentElement;
+  r.style.setProperty('--f', FONTS[S.font] || FONTS.vazir);
+  r.style.setProperty('--s', S.size + 'px');
+  r.style.setProperty('--a', S.align);
+  r.dataset.theme = S.theme;
+  ta.dir = S.dir;
+  $('#font').value = S.font;
+  $('#sz').textContent = S.size.toLocaleString('fa-IR');
+  $('#theme').textContent = S.theme === 'dark' ? '☀' : '☾';
+  document.querySelectorAll('[data-al]').forEach(b => b.setAttribute('aria-pressed', b.dataset.al === S.align));
+  document.querySelectorAll('[data-dir]').forEach(b => b.setAttribute('aria-pressed', b.dataset.dir === S.dir));
+  store.set('pn_settings', JSON.stringify(S));
+}
+
+/* ---------- متن و ذخیره خودکار ---------- */
+let dirty = false;
+function count(){
+  const v = ta.value.trim();
+  $('#cnt').textContent = (v ? v.split(/\s+/).length : 0).toLocaleString('fa-IR') + ' کلمه، ' + ta.value.length.toLocaleString('fa-IR') + ' نویسه';
+}
+function saveText(){
+  if(!dirty) return;
+  if(store.set('pn_text', ta.value)){
+    dirty = false;
+    $('#st').textContent = 'ذخیره شد ' + new Date().toLocaleTimeString('fa-IR', {hour:'2-digit', minute:'2-digit'});
+  } else $('#st').textContent = 'ذخیره نشد؛ حافظه مرورگر در دسترس نیست';
+}
+ta.addEventListener('input', () => { dirty = true; count(); $('#st').textContent = 'ذخیره نشده…'; });
+setInterval(saveText, 3000);
+ta.addEventListener('blur', saveText);
+addEventListener('beforeunload', saveText);
+document.addEventListener('visibilitychange', saveText);
+
+/* ---------- ابزارها ---------- */
+let tt;
+function toast(m){ const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => e.classList.remove('on'), 1800); }
+
+function download(){
+  const url = URL.createObjectURL(new Blob(['\ufeff' + ta.value], {type:'text/plain;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'یادداشت.txt'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function act(b){
+  const a = b.dataset.a;
+  ta.focus();
+  if(b.dataset.al){ S.align = b.dataset.al; }
+  else if(b.dataset.dir){
+    S.dir = b.dataset.dir;
+    if(S.align === 'left' || S.align === 'right') S.align = S.dir === 'rtl' ? 'right' : 'left';
+  }
+  else if(a === 'undo' || a === 'redo'){ document.execCommand(a); return; }
+  else if(a === 'copy' || a === 'cut'){
+    if(ta.selectionStart === ta.selectionEnd){ toast('ابتدا بخشی از متن را انتخاب کنید'); return; }
+    document.execCommand(a);
+    toast(a === 'copy' ? 'کپی شد' : 'برش داده شد');
+    return;
+  }
+  else if(a === 'paste'){
+    (navigator.clipboard && navigator.clipboard.readText ? navigator.clipboard.readText() : Promise.reject())
+      .then(t => {
+        if(!document.execCommand('insertText', false, t)){
+          ta.setRangeText(t, ta.selectionStart, ta.selectionEnd, 'end');
+          ta.dispatchEvent(new Event('input'));
+        }
+      })
+      .catch(() => toast('مرورگر اجازه نداد؛ از Ctrl+V استفاده کنید'));
+    return;
+  }
+  else if(a === 'smaller' || a === 'bigger'){ S.size = Math.min(64, Math.max(12, S.size + (a === 'bigger' ? 2 : -2))); }
+  else if(a === 'theme'){ S.theme = S.theme === 'dark' ? 'light' : 'dark'; }
+  else if(a === 'download'){ download(); return; }
+  apply();
+}
+
+$('#bar').addEventListener('click', e => { const b = e.target.closest('button'); if(b) act(b); });
+$('#bar').addEventListener('mousedown', e => { if(!e.target.closest('select')) e.preventDefault(); }); // انتخاب متن از دست نرود
+$('#font').addEventListener('change', e => { S.font = e.target.value; apply(); ta.focus(); });
+addEventListener('keydown', e => {
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){ e.preventDefault(); dirty = true; saveText(); toast('ذخیره شد'); }
+});
+
+/* ---------- شروع ---------- */
+ta.value = store.get('pn_text') || '';
+apply(); count();
+if(ta.value) $('#st').textContent = 'آخرین نوشته بازیابی شد';
+ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+</script>
+</body>
+</html>
