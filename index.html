@@ -37,7 +37,7 @@ button,select{font:inherit;color:inherit}
 .b:hover{background:var(--tint)}
 .b[aria-pressed=true]{background:var(--accent);color:var(--on)}
 .b:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.b svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.b svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .ltr{font-weight:600;letter-spacing:.02em}
 select{height:34px;max-width:140px;border:0;border-radius:7px;background:transparent;padding:0 6px;cursor:pointer}
 select option{background:var(--paper);color:var(--ink)}
@@ -71,14 +71,14 @@ textarea::selection{background:var(--tint)}
   </div>
 
   <div class="grp">
-    <button class="b" data-a="copy" title="کپی (Ctrl+C)">کپی</button>
-    <button class="b" data-a="cut" title="برش (Ctrl+X)">برش</button>
-    <button class="b" data-a="paste" title="چسباندن (Ctrl+V)">چسباندن</button>
+    <button class="b" data-a="copy" title="کپی (Ctrl+C)" aria-label="کپی"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg></button>
+    <button class="b" data-a="cut" title="برش (Ctrl+X)" aria-label="برش"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></button>
+    <button class="b" data-a="paste" title="چسباندن (Ctrl+V)" aria-label="چسباندن"><svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></button>
   </div>
 
   <div class="grp">
-    <button class="b" data-a="selectall" title="انتخاب همه متن (Ctrl+A)">انتخاب همه</button>
-    <button class="b" data-a="clear" title="پاک کردن همه متن">پاک کردن همه</button>
+    <button class="b" data-a="selectall" title="انتخاب همه متن (Ctrl+A)" aria-label="انتخاب همه"><svg viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M8 9h8M8 12h8M8 15h5"/></svg></button>
+    <button class="b" data-a="clear" title="پاک کردن همه متن" aria-label="پاک کردن همه"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v6M14 10v6"/></svg></button>
   </div>
 
   <div class="grp">
@@ -118,7 +118,7 @@ textarea::selection{background:var(--tint)}
   <span class="sp"></span>
 
   <div class="grp">
-    <button class="b" data-a="download" title="دانلود به‌صورت فایل متنی (Ctrl+S)">دانلود</button>
+    <button class="b" data-a="download" title="دانلود به‌صورت فایل متنی" aria-label="دانلود"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg></button>
     <button class="b" data-a="theme" id="theme" title="تغییر تم روشن/تاریک">☾</button>
   </div>
 </header>
